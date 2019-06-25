@@ -34,7 +34,7 @@ grep 'temporary password' /var/log/mysqld.log
 
 ### 5. 루트 암호 변경
 
-mysql_secure_installation 으로 루트 암호를 변경한다. 암호는 대문자와 특수문자가 섞여 있어야 한다.
+mysql_secure_installation 으로 루트 암호를 변경한다. 암호는 대문자와 특수문자가 섞여 있어야 한다. mysql_secure_installation 을 실행하면 암호를 물어보는데 앞에서 확인한 임시암호를 입력하면 된다.
 
 ```sql
 mysql_secure_installation
