@@ -1,6 +1,6 @@
 ---
 layout: post
-title: MySQL8 설치 가이드
+title: MySQL8 설치하기 (CentOS7)
 ---
 
 MySQL 8 설치는 아래의 순서대로 한다.
