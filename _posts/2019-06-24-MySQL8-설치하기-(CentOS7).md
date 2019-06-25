@@ -55,7 +55,7 @@ CREATE USER '아이디'@'호스트' IDENTIFIED WITH mysql_native_password BY '�
 ### 7. 권한 설정
 
 {% highlight sql linenos %}
-GRANT ALL PRIVILEGES ON \*.\* TO '아이디'@'호스트' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO '아이디'@'호스트' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 {% endhighlight %}
 
