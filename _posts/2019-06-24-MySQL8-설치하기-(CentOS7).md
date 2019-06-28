@@ -62,3 +62,7 @@ FLUSH PRIVILEGES;
 * 아이디와 호스트는 6. 사용자 추가를 참고한다.
 * WITH GRANT OPTION : 다른 사용자에게 자신이 소유한 권한을 부여한다.
 * \*.\* 는 모든 데이터베이스와 테이블에 권한을 준다는 뜻이다.
+
+### 참고
+
+* [MySQL8 을 native_password_authentication 으로 실행하기](https://medium.com/@crmcmullen/how-to-run-mysql-8-0-with-native-password-authentication-502de5bac661)
