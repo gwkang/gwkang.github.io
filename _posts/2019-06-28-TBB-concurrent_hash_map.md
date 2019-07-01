@@ -51,21 +51,16 @@ else
 이 예제는 제대로 동작하지 않는다. 데이터가 제대로 추가된다면 문제 없지만, 추가에 실패해서 데이터를 삭제할 때 데드락이 걸리게 된다. 왜냐하면, 쓰기락이 풀리지 않은 상태에서 erase 를 호출하는데 erase 내에서도 쓰기락을 걸기 때문이다. 데드락을 피하려면 다음과 같이 해야 한다.
 
 {% highlight c++ linenos %}
-bool success = false;
+map_t::accessor acc;
+int32_t key = 3;
+int32_t val = 15;
+if (map.insert(acc, key))
 {
-    map_t::accessor acc;
-    int32_t key = 3;
-    int32_t val = 15;
-    if (map.insert(acc, key))
-    {
-        acc->second = val;
-        success = true;
-    }
-    // 쓰기락은 이 스코프에서 나오면서 풀린다.
+    acc->second = val;
 }
-
-if (success == false)
+else 
 {
+    acc.release(); // 직접 락을 해제한다.
     map.erase(key);
 }
 {% endhighlight %}
