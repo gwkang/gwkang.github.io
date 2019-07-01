@@ -9,9 +9,10 @@ tags: [tbb, map, concurrent, concurrent_hash_map]
 
 ### 정의
 
-concurrent_hash_map 은 동시 접근을 허용하는 해시테이블이다. **concurrent_hash_map<Key, T, HashCompare>** 형태로 정의할 수 있다. 컨테이너에 저장되는 원소 타입은 **std::pair<const Key, T>** 이다. 다음은 키와 데이터타입이 모두 int32_t 인 맵을 정의한 예제이다.
+concurrent_hash_map 은 동시 접근을 허용하는 해시테이블이다. 멀티쓰레드 환경에서 빠른 해시맵이 필요하다면 concurrent_hash_map 이 적당하다. **concurrent_hash_map<Key, T, HashCompare>** 형태로 정의할 수 있다. 컨테이너에 저장되는 원소 타입은 **std::pair<const Key, T>** 이다. 다음은 키와 데이터타입이 모두 int32_t 인 맵을 정의한 예제이다.
 
 {% highlight c++ linenos %}
+#include <tbb/concurrent_hash_map.h>
 using map_t = tbb::concurrent_hash_map<int32_t, int32_t>;
 map_t map;
 {% endhighlight %}
@@ -26,7 +27,7 @@ int32_t key = 3;
 int32_t val = 15;
 if (map.insert(acc, key))
 {
-	acc->second = val;
+    acc->second = val;
 }
 {% endhighlight %}
 
@@ -38,12 +39,12 @@ int32_t key = 3;
 int32_t val = 15;
 if (map.insert(acc, key))
 {
-	acc->second = val;
+    acc->second = val;
 }
 else
 {
-	// 쓰기락이 아직 풀리지 않았다.
-	map.erase(key); // 데드락!!
+    // 쓰기락이 아직 풀리지 않았다.
+    map.erase(key); // 데드락!!
 }
 {% endhighlight %}
 
@@ -60,7 +61,7 @@ bool success = false;
         acc->second = val;
         success = true;
     }
-   	// 쓰기락은 이 스코프에서 나오면서 풀린다.
+    // 쓰기락은 이 스코프에서 나오면서 풀린다.
 }
 
 if (success == false)
@@ -77,8 +78,8 @@ int32_t key = 3;
 int32_t val;
 if (map.find(acc, key))
 {
-	val = acc->second;
+    val = acc->second;
 }
 {% endhighlight %}
 
-const_accessor 는 읽기락을 건다. 여기에선 읽기락과 쓰기락의 차이를 설명하지 않을 것이다.
+const_accessor 는 읽기락을 건다.
