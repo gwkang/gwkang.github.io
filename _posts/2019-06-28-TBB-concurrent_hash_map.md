@@ -42,8 +42,8 @@ if (map.insert(acc, key))
 }
 else
 {
-    // 쓰기락이 아직 풀리지 않았다.
-    map.erase(key); // 데드락!!
+	// 쓰기락이 아직 풀리지 않았다.
+	map.erase(key); // 데드락!!
 }
 ```
 
