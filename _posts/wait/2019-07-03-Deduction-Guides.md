@@ -8,7 +8,7 @@ tags: [c++, template, deduction, deduction guides]
 
 ### C++17 에서의 타입 추론
 
-C++17 에서 새로운 방식의 타입 추론이 생겼다. 클래스의 템플릿 파라미터를 변수 선언 초기화에 명시된 매개변수나 함수 표기 타입 변환으로부터 추론한다.
+C++17 에서 새로운 방식의 타입 추론이 생겼다. (1) 템플릿 파라미터를 생성자의 매개변수에서 추론하거나, (2) 함수 표기식의 타입 변환에서 추론하는 것이다.
 
 {% highlight c++ linenos %}
 template<typename T1, typename T2, typename T3 = T2>
@@ -26,7 +26,7 @@ C c4;                  // ERROR: T1 and T2 are undefined
 C c5("hi");            // ERROR: T2 is undefined
 {% endhighlight %}
 
-모든 매개변수가 추론 절차나 기본 인자로부터 추론된다. 일부 매개변수를 명시하고 나머지들을 추론하는 것은 불가능하다.
+모든 매개변수가 추론 절차에 따라 결정되거나 기본 인자로부터 결정된다. 매개변수 중 일부만 명시하고 나머지들을 추론하는 것은 불가능하다.
 
 {% highlight c++ linenos %}
 C<string> c10("hi","my", 42);     // ERROR: only T1 explicitly specified, T2 not deduced
@@ -51,7 +51,9 @@ S y(12);         // OK since C++17, same as: S<int> y(12);
 auto z = S{12};  // OK since C++17, same as: auto z = S<int>{12};
 {% endhighlight %}
 
-위 코드에서 deduction guide 라고 불리는 템플릿 같은 생성자를 살펴보자. 함수 템플릿 같아 보이지만 문법이 다르다. 선언 S x(12) 에서 S 를 플레이스홀더 클래스 타입이라 부른다. 플레이스홀더가 사용되면 반드시 변수 이름과 초기화가 뒤따라야 한다. 아래와 같은 문법은 허용되지 않는다.
+위 코드에서 템플릿 같아 보이는 생성자를 살펴보자. 이것은 deduction guide 라고 불린다. 이것은 함수 템플릿 같아 보이지만 문법적으로 약간 다르다.
+
+선언 S x(12) 에서 S 를 플레이스홀더 클래스 타입이라 부른다. 플레이스홀더가 사용되면 반드시 변수 이름과 초기화가 뒤따라야 한다. 아래와 같은 문법은 허용되지 않는다.
 
 {% highlight c++ linenos %}
 S* p = &x;
