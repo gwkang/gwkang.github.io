@@ -3,7 +3,22 @@ layout: post
 title: multitail 색 설정 예제
 tags: [multitail, color, example]
 ---
-# multitail 커스텀 색 설정하기
+## multitail 설치하기
+
+```shell
+yum groupinstall -y "Development Tools"
+yum install -y wget
+yum install -y ncurses-devel
+
+wget https://www.vanheusden.com/multitail/multitail-6.5.0.tgz
+tar xvf multitail-6.5.0.tgz
+cd multitail-6.5.0
+make install
+
+cp /usr/local/etc/multitail.conf.new /usr/local/etc/multitail.conf
+```
+
+## multitail 커스텀 색 설정하기
 
 multitail 은 기본적으로 여러 컬러스킴을 지원한다. 하지만 자신이 만든 로그를 보기에는 그 스킴들이 쓸모 없을 수가 있다. 이럴 때 자신만의 컬러 스킴을 만들어 써야 한다.
 
@@ -15,7 +30,7 @@ multitail 은 기본적으로 여러 컬러스킴을 지원한다. 하지만 자
 sudo yum install -y multitail
 ```
 
-그리고 나서 설정 파일 (/etc/multitail.conf) 에 아래와 같이 내용을 추가한다.
+그리고 나서 설정 파일 (**/usr/local/etc/multitail.conf**) 에 아래와 같이 내용을 추가한다.
 
 ```
 colorscheme:example
@@ -28,6 +43,6 @@ cs_re:green:^.*\[info\].*
 이렇게 하면 설정은 끝난 것이다. 실행은 다음과 같이 multitail 을 실행하면 된다.
 
 ```shell
-> multitail -cS example -f <logfile>
+multitail -cS example -f <logfile>
 ```
 
