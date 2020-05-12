@@ -200,6 +200,8 @@ upassword: password
     
 ```
 
+* networks : zabbix-server 와 mysql 을 같은 호스트에 설치하기 때문에, 네트워크 설정을 해야한다. 설정한 네트워크 이름을 zabbix-server 도커 설정에서 사용한다.
+
 ### roles/server/tasks/main.yml
 
 ```yaml
@@ -226,6 +228,9 @@ upassword: password
       - MYSQL_DATABASE: "zabbix"
     
 ```
+
+* duser & upassword : 앞에서 설정한 group_vars/mysql 에 정의 돼 있는 변수다.
+* DB_SERVER_HOST : mysql 도커에서 설정한 networks 이름을 설정한다.
 
 ### roles/agent/tasks/main.yml
 
