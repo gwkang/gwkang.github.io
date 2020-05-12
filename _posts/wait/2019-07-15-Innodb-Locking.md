@@ -55,7 +55,7 @@ InnoDB 는 로우락와 테이블락의 공존을 허용하는 다중 입도 락
 
 락은 존재하는 락과 호환된다면 트랜잭션 요청이 승인되지만 충돌하면 승인되지 않는다. 트랜잭션은 존재하는 락이 해제될 때까지 대기한다. 락 요청이 존재하는 락과 충돌하고 데드락의 이유로 승인될 수 없다면 에러가 발생한다.
 
-인텐션락은 전체 테이블 요청(예를 들어 LOCK TABLES ... WRITE)을 제외하고 어떤 다른 것도 블록하지 않는다. 인텐션락의 주 목적은 누군가가 행을 락킹하고 있음을 또는 그 테이블의 어떤 행에 락을 걸 것이라는 것을 보여주는 것이다.
+인텐션락은 전체 테이블 요청(예를 들어 LOCK TABLES ... WRITE)을 제외하고 어떤 다른 것도 블록하지 않는다. 인텐션락의 주 목적은 **누군가가 행을 락킹하고 있음을 또는 그 테이블의 어떤 행에 락을 걸 것이라는 것**을 보여주는 것이다.
 
 인텐션락에 대한 트랜잭션 데이터는 
 
@@ -63,3 +63,4 @@ InnoDB 는 로우락와 테이블락의 공존을 허용하는 다중 입도 락
 
 * [InnoDB Locking](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html)
 * [MySQL InnoDB lock & deadlock 이해하기](https://www.letmecompile.com/mysql-innodb-lock-deadlock/)
+* [잠금에 관한 고찰(1) - 잠금(Lock) 매커니즘에 대하여](https://kuaaan.tistory.com/97)
