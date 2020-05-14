@@ -61,15 +61,20 @@ zabbix server 와 mysql server 는 같은 호스트(1.1.1.1)에 설치한다. za
   * mysql : mysql 호스트들이 사용할 그룹 변수들이 정의돼 있다.
 * **roles/**
   * **common/**
-    * **defaults/**
     * **tasks/**
+      * main.yml
     * **vars/**
   * **mysql/**
     * **handlers/**
     * **tasks/**
+      * main.yml
     * **templates/**
   * **server/**
+    * **tasks/**
+      * main.yml
   * **agent/**
+    * **tasks/**
+      * main.yml
 
 ## SSH 인증 정보 설정
 
@@ -201,6 +206,7 @@ upassword: password
 ```
 
 * networks : zabbix-server 와 mysql 을 같은 호스트에 설치하기 때문에, 네트워크 설정을 해야한다. 설정한 네트워크 이름을 zabbix-server 도커 설정에서 사용한다.
+* conf.d 파일은 템플릿을 이용한다.
 
 ### roles/server/tasks/main.yml
 
