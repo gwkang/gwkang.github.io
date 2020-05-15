@@ -193,7 +193,13 @@ Record lock, heap no 3 PHYSICAL RECORD: n_fields 3; compact format; info bits 0
  2: len 7; hex 9000000172011c; asc     r  ;;...
 ```
 
+## AUTO-INC Locks
 
+AUTO-INC Lock은 AUTO_INCREMENT 컬럼이 있는 테이블에 삽입할 때 트랜잭션에 의해 취해지는 특수한 Table-level Lock이다. 한 트랜잭션이 테이블에 값을 삽입하면, 그 테이블에 삽입하려는 다른 트랜잭션은 반드시 기다려야 한다. 그렇게 해서 첫 트랜잭션에 의해 삽입된 Row는 연속되는 Primary Key를 얻는다.
+
+innodb_autoinc_lock_mode 설정 옵션은 Auto-increment Locking에 사용되는 알고리즘을 제어한다. 그것은 예측 가능한 순서와 삽입 구문의 최대 동시성 사이의 균형을 이루는 방법을 선택할 수 있다.
+
+참고 : ["InnoDB에서의 AUTO_INCREMENT 핸들링"](https://dev.mysql.com/doc/refman/8.0/en/innodb-auto-increment-handling.html)
 
 ## 참고
 
