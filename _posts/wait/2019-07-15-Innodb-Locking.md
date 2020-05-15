@@ -114,9 +114,9 @@ SELECT * FROM child WHERE id = 100;
 
 InnoDB 의 Gap Locks 은 "순전히 억제"한다. Gap Lock 의 목적은 단지 Gap 사이에 레코드를 삽입하는 것을 막는 것이다. Gap Lock 은 공존할 수 있다. 어떤 트랜잭션이 취한 Gap Lock 은 같은 Gap 에 대해 다른 트랜잭션이 Gap Lock 을 얻지 못하도록 막지는 않는다. 그것이 Shared Gap Lock 이든 Exclusive Gap Lock 이든 차이가 없다. 그것들은 서로 충돌하지 않고 같은 기능을 수행한다.
 
-Gap Locking 은 명확히 비활성될 수 있다. Transaction Isolcation Level 을 READ_COMMITED 로 바꾸면 비활성된다.  이 환경에서 Gap Locking 은 검색할 때와 Index 를 스캔할 때 사용하지 않는다. 그리고 Foreign-key 제약 검사와 중복 Key 검사를 위해서만 사용된다.
+Gap Locking 은 명시적으로 비활성시킬 수 있다. Transaction Isolcation Level 을 **READ_COMMITED**으로 바꾸면 비활성된다.  이 환경에서 Gap Locking 은 검색할 때와 Index 를 스캔할 때 사용하지 않는다. 그리고 Foreign-key 제약 검사와 중복 Key 검사를 위해서만 사용된다.
 
-READ_COMMITTED Isolation Level 을 사용하면 또 다른 효과가 있다. MYSQL 이 WHERE 조건을 평가한 이후에 일치하지 않는 Row 에 대한 Record Lock 은 풀린다. UPDATE 구문에  대해서, InnoDB 는 "semi-consistent" 읽기를 한다. 그렇게 해서 최신 커밋 된 버전을 MySQL로 반환하여 MySQL이 Row가 UPDATE의 WHERE 조건과 일치하는지 확인할 수 있도록 한다.
+**READ_COMMITTED** Isolation Level 을 사용하면 또 다른 효과가 있다. MYSQL 이 WHERE 조건을 평가한 이후에 일치하지 않는 Row 에 대한 Record Lock 은 풀린다. UPDATE 구문에  대해서, InnoDB 는 "semi-consistent" 읽기를 한다. 그렇게 해서 최신 커밋 된 버전을 MySQL로 반환하여 MySQL이 Row가 UPDATE의 WHERE 조건과 일치하는지 확인할 수 있도록 한다.
 
 ## Next-Key Locks
 
@@ -124,7 +124,35 @@ Next-key Lock 은 Index Record에 대한 Record Lock과 Index Record 앞의 Gap�
 
 테이블 Index를 스캔하거나 검색할 때 접하는 Index Record에 Shared 또는 Exclusive Lock을 설정하는 방식으로 InnoDB는 Row-level Locking을 수행한다. 그래서, Row-level Lock은 실제로 Index Record Lock이다. Index Record에 걸리는 Next-key Lock 역시 Index Record 앞의 Gap에 영향을 준다. Next-Key Lock은 Index Record Lock과 Index Record 앞의 갭에 대한 Gap Lock을 합한 것이다. 만약 한 세션이 Index에 있는 Record R에 Shared 또는 Exclusive Lock을 걸었다면, 다른 세션에서는 Index 순서로 R 앞에 있는 Gap 안에 새 Index Record를 삽입할 수 없게된다.
 
-어떤 인덱스가 10, 11, 13, 20을 포함한다고 가정하자. 따르는 간격을 커버하는 인덱스에 대한 가능한 Next-Key Lock
+어떤 인덱스가 10, 11, 13, 20을 포함한다고 가정하자. 이 인덱스에 대한 가능한 Next-Key Lock은 다음 간격을 포함한다.
+
+```
+(negative infinity, 10]
+(10, 11]
+(11, 13]
+(13, 20]
+(20, positive infinity)
+```
+
+마지막 간격에서, Next-Key Lock은 Index에 있는 가장 큰 값 위와 어떤 Index값보다 큰 "상한값을 가진" pseudo-record 사이의 Gap에 Lock을 건다.  상한은 실제 Index Record가 아니다. 그래서 실제로는 이 Next-Key Lock은 가장 큰 Index 값 다음의 Gap에 Lock을 건다.
+
+기본적으로, InnoDB는 **REPEATABLE_READ** Isolation Level에서 동작한다. 이 경우, InnoDB는 검색과 Index 스캔에 대해 Phantom Rows를 막기 위해서 Next-Key Lock을 사용한다.
+
+Next-Key Lock에 대한 트랜잭션 데이터는 **SHOW ENGINE INNODB STATUS** 명령과 InnoDB 모니터에서 다음과 비슷하게 출력된다.
+
+```sql
+RECORD LOCKS space id 58 page no 3 n bits 72 index `PRIMARY` of table `test`.`t` 
+trx id 10080 lock_mode X
+Record lock, heap no 1 PHYSICAL RECORD: n_fields 1; compact format; info bits 0
+ 0: len 8; hex 73757072656d756d; asc supremum;;
+
+Record lock, heap no 2 PHYSICAL RECORD: n_fields 3; compact format; info bits 0
+ 0: len 4; hex 8000000a; asc     ;;
+ 1: len 6; hex 00000000274f; asc     'O;;
+2: len 7; hex b60000019d0110; asc        ;;
+```
+
+
 
 ## 참고
 
