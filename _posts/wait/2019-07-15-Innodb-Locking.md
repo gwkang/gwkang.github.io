@@ -156,6 +156,45 @@ Record lock, heap no 2 PHYSICAL RECORD: n_fields 3; compact format; info bits 0
 
 Insert Intention Lock은 Row 삽입 전에 INSERT 명령이 설정하는 Gap Lock의 한 종류다. 이 Lock은 같은 Index Gap 안에 삽입하는 여러 트랜잭션들이 Gap 안의 같은 위치에 삽입하는게 아니라면 서로 기다릴 필요가 없도록 삽입하려는 의도를 나타낸다.
 
+4와 7 값을 가진 Index Record가 있다고 하자. 5와 6을 삽입하려는 각 트랜잭션은 삽입된 Row에 Exclusive Lock을 얻기 전에 4와 7사이의 Gap에 Insert Intention Lock을 건다. 그러나 두 Row가 서로 충돌하지 않기 때문에 서로를 블록하지 않는다.
+
+다음의 예는 삽입된 Record에 Exclusive Lock을 얻기 전에 Insert Intetion Lock을 얻는 트랜잭션을 보여준다. 예제는 A와 B 두 클라이언트가 참여한다. 
+
+클라이언트A는 두 Index Record (90과 102)를 가진 테이블을 만든다. 그런다음 100보다 큰 ID를 가진 Index Record에 Exclusive Lock을 거는 트랜잭션을 시작한다. 그 Exclusive Lock은 Record 102 앞의 Gap Lock을 포함한다.
+
+```sql
+mysql> CREATE TABLE child (id int(11) NOT NULL, PRIMARY KEY(id)) ENGINE=InnoDB;
+mysql> INSERT INTO child (id) values (90),(102);
+
+mysql> START TRANSACTION;
+mysql> SELECT * FROM child WHERE id > 100 FOR UPDATE;
++-----+
+| id  |
++-----+
+| 102 |
++-----+
+```
+
+클라이언트B는 그 Gap 안에 Record를 삽입하는 트랜잭션을 시작한다. 그 트랜잭션은 Exclusive Lock을 얻기를 기다리는 동안 Insert Intention Lock을 얻는다.
+
+```sql
+mysql> START TRANSACTION;
+mysql> INSERT INTO child (id) VALUES (101);
+```
+
+Insert Intention Lock에 대한 트랜잭션 데이터는 SHOW ENGINE INNODB STATUS와 InnoDB 모니터 출력에서 다음과 비슷하게 출력된다.
+
+```sql
+RECORD LOCKS space id 31 page no 3 n bits 72 index `PRIMARY` of table `test`.`child`
+trx id 8731 lock_mode X locks gap before rec insert intention waiting
+Record lock, heap no 3 PHYSICAL RECORD: n_fields 3; compact format; info bits 0
+ 0: len 4; hex 80000066; asc    f;;
+ 1: len 6; hex 000000002215; asc     " ;;
+ 2: len 7; hex 9000000172011c; asc     r  ;;...
+```
+
+
+
 ## 참고
 
 * [InnoDB Locking](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html)
