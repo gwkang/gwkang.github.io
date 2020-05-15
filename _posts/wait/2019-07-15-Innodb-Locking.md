@@ -152,7 +152,9 @@ Record lock, heap no 2 PHYSICAL RECORD: n_fields 3; compact format; info bits 0
 2: len 7; hex b60000019d0110; asc        ;;
 ```
 
+## Insert Intention Locks
 
+Insert Intention Lock은 Row 삽입 전에 INSERT 명령이 설정하는 Gap Lock의 한 종류다. 이 Lock은 같은 Index Gap 안에 삽입하는 여러 트랜잭션들이 Gap 안의 같은 위치에 삽입하는게 아니라면 서로 기다릴 필요가 없도록 삽입하려는 의도를 나타낸다.
 
 ## 참고
 
